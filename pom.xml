@@ -11,6 +11,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         
         <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
+        
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
     
     <dependencies>
@@ -35,7 +37,7 @@
             <version>2.3.0</version>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -76,24 +78,24 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>${dockerfile-maven-version}</version>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>1.2.0</version>
                 <configuration>
-                    <repository>spotify/foobar</repository>
-                    <tag>${project.version}</tag>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
+                    <from>
+                        <image>openjdk:8u171-alpine</image>
+                        <!--          <credHelper></credHelper> -->
+                    </from>
+                    <to>
+                        <image>registry.hub.docker.com/rastadidi/rfc4180-validator</image>
+                        <!--          <credHelper></credHelper> -->
+                    </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Xms512m</jvmFlag>
+                            <jvmFlag>-Xmx512m</jvmFlag>
+                        </jvmFlags>
+                    </container>
                 </configuration>
             </plugin>
         </plugins>

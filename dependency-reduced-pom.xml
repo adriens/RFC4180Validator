@@ -33,23 +33,22 @@
         <configuration />
       </plugin>
       <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>${dockerfile-maven-version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-              <goal>push</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>1.2.0</version>
         <configuration>
-          <repository>spotify/foobar</repository>
-          <tag>${project.version}</tag>
-          <buildArgs>
-            <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-          </buildArgs>
+          <from>
+            <image>openjdk:8u171-alpine</image>
+          </from>
+          <to>
+            <image>registry.hub.docker.com/rastadidi/rfc4180-validator</image>
+          </to>
+          <container>
+            <jvmFlags>
+              <jvmFlag>-Xms512m</jvmFlag>
+              <jvmFlag>-Xmx512m</jvmFlag>
+            </jvmFlags>
+          </container>
         </configuration>
       </plugin>
     </plugins>
@@ -58,6 +57,7 @@
     <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.deploy.skip>true</maven.deploy.skip>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>
