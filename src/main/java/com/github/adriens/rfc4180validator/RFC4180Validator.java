@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Iterator;
@@ -49,9 +50,11 @@ public class RFC4180Validator {
     }
 
     // Here is why : http://utf8everywhere.org/
-    public boolean areCsvFilesUTF8Encoded() throws Exception {
-        logger.info("About to scan files to check if encoding is UTF-8");
-        boolean out = true;
+    public boolean areCsvFilesUTF8Encoded() throws NotUTF8EncodedException {
+        logger.info("Check that all files are UTF-8 encoded. See why here : http://utf8everywhere.org/");
+        logger.info("About to scan files to check if encoding is UTF-8...");
+        try {
+            boolean out = true;
         logger.info("Checking if csv files are UTF-8 encoded...");
         Iterator<File> filesIter = csvFiles.iterator();
         while (filesIter.hasNext()) {
@@ -74,16 +77,30 @@ public class RFC4180Validator {
             if (encoding != null) {
                 logger.info("Detected encoding for file <" + lFile.getPath() + "> : <" + encoding + ">");
                 if (!encoding.equalsIgnoreCase("UTF-8")) {
-                    logger.error("The file <" + lFile.getAbsolutePath() + "> is NOT UTF-8 encoded but is <" + encoding + "> encoded.");
+                    String errMsg = "The file <" + lFile.getAbsolutePath() + "> is NOT UTF-8 encoded but is <" + encoding + "> encoded.";
+                    logger.error(errMsg);
+                    throw new NotUTF8EncodedException(errMsg);
                 }
-                Assert.assertEquals("File encoding of <" + lFile.getPath() + "> is not the expected one", "UTF-8", encoding);
+                else {
+                    logger.info("Proper encoding <UTF-8>found.");
+                    out = true;
+                }
+                //Assert.assertEquals("File encoding of <" + lFile.getPath() + "> is not the expected one", "UTF-8", encoding);
             } else {
-                logger.warn("No encoding could be detected on <" + lFile.getPath() + "> : do \"something\" if you can dude ;-p");
+                String errMsg = "No encoding could be detected on <" + lFile.getPath() + "> : do \"something\" if you can dude ;-p";
+                logger.error(errMsg);
+                throw new NotUTF8EncodedException(errMsg);
             }
             detector.reset();
 
         }
         return out;
+        }
+        catch (Exception ex){
+            String errMsg = "I/O Error while accessing file. Not able to heck encoding : " + ex.getMessage();
+            logger.error(errMsg);
+            throw new NotUTF8EncodedException(errMsg);
+        }
     }
 
     public boolean checkFirstLineIsCsvLike() throws Exception {
@@ -187,6 +204,17 @@ public class RFC4180Validator {
         RFC4180Validator validator = new RFC4180Validator();
         try {
             validator.areCsvFilesUTF8Encoded();
+            logger.info("Analysis successfully completed.");
+            System.exit(0);
+        } catch (NotUTF8EncodedException ex) {
+            logger.error("UTF-8 Analysis failure : " + ex.getMessage());
+            System.exit(1);
+        }
+        
+        
+        /*
+        try {
+            validator.areCsvFilesUTF8Encoded();
             validator.checkFirstLineIsCsvLike();
             //validator.checkEveryRowHasTheSameNumberOfColumns();
             validator.checkNoEmptyLines();
@@ -195,7 +223,7 @@ public class RFC4180Validator {
         } catch (Exception ex) {
             logger.error("Could not successfully achieve analysis : " + ex.getMessage());
             System.exit(1);
-        }
+        }*/
     }
 
 }
