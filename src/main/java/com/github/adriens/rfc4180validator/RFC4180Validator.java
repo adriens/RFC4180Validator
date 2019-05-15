@@ -35,7 +35,7 @@ public class RFC4180Validator {
 
     public final static String[] CSV_SUFFIX = {"csv", "CSV"};
     public final static String ENV_KEY_TARGET_DIR = "CSV_DIR";
-    public final static String DEFAULT_DIR = "input";
+    public final static String DEFAULT_DIR = "./";
 
     public RFC4180Validator() {
         logger.info("Getting target csv directory <" + DEFAULT_DIR + "> to analyze...");
