@@ -57,4 +57,11 @@
                 <goal>dockerfile:build</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-jib:build</actionName>
+            <displayName>jib:build</displayName>
+            <goals>
+                <goal>jib:build</goal>
+            </goals>
+        </action>
     </actions>
